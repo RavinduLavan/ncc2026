@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db-2026
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: node_db
+      MYSQL_USER: node_user
+      MYSQL_PASSWORD: node_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+
+  app:
+    build: ./app
+    container_name: node-app
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_USER: node_user
+      DB_PASSWORD: node_password
+      DB_NAME: node_db
+      DB_PORT: 3306
+    ports:
+      - "3000:3000"
+
+
+volumes:
+  mysql_data:
